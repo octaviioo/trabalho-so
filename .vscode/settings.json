@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.md": "c",
+        "funcoes.h": "c",
+        "stdio.h": "c"
+    }
+}
