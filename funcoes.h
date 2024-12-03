@@ -11,6 +11,10 @@ typedef struct Navio {
     int tamanho; 
 } Navio;
 
+void limparTela() {
+    printf("\033[H\033[J");
+}
+
 void draw_box_with_text(int width, int height, const char *text) {
     int text_row = height / 2;               
     int text_col = (width - strlen(text)) / 2; 
@@ -75,22 +79,23 @@ void imprimeMatriz(int matriz[7][7], int tipo){
     
 }
 
-int verificaPosicaoValida(int tabuleiro[7][7], Navio *navio) {
-    if (navio->direcao == 0) {  
-        if (navio->y + navio->tamanho > 7) {  
+int verificaPosicaoValida(int tabuleiro[7][7], Navio navio) {
+    if (navio.direcao == 0) {  
+        if (navio.y + navio.tamanho > 7) {  
             return 0;
         }
-        for (int i = 0; i < navio->tamanho; i++) {
-            if (tabuleiro[navio->x][navio->y + i] != 0) { 
+        for (int i = 0; i < navio.tamanho; i++) {
+            if (tabuleiro[navio.x][navio.y + i] != 0) { 
                 return 0;
             }
         }
     } else {
-        if (navio->x + navio->tamanho > 7) {  
+        if (navio.x + navio.tamanho > 7) {  
             return 0;
         }
-        for (int i = 0; i < navio->tamanho; i++) {
-            if (tabuleiro[navio->x + i][navio->y] != 0) {  
+        for (int i = 0; i < navio.tamanho; i++) {
+            if (tabuleiro[navio.x + i][navio.y] != 0) {  
+                return 0;
             }
         }
     }
@@ -107,7 +112,7 @@ void geraNavio(int tabuleiro[7][7], Navio *navio) {
         navio->direcao = rand() % 2; 
         navio->valida = 0;  
 
-        if (verificaPosicaoValida(tabuleiro, navio)) {
+        if (verificaPosicaoValida(tabuleiro, *navio)) {
             navio->valida = 1;
            
             for (int i = 0; i < navio->tamanho; i++) {
@@ -119,6 +124,18 @@ void geraNavio(int tabuleiro[7][7], Navio *navio) {
             }
         }
     }
+}
+
+void insereNavioPlayer(int tabuleiro[7][7], Navio navio){
+
+    for (int i = 0; i < navio.tamanho; i++) {
+        if (navio.direcao == 0) { 
+                tabuleiro[navio.x][navio.y + i] = 1;
+        } else {  
+            tabuleiro[navio.x + i][navio.y] = 1;
+       }
+    }
+
 }
 
 void fazJogada(int jogada[7][7], int tabuleiro[7][7])
