@@ -15,6 +15,33 @@ void limparTela() {
     printf("\033[H\033[J");
 }
 
+void desenhaBarco() {
+    printf(RED"                                __/__\n");
+    printf(RED"                         _____/_____|           \n");
+    printf(RED"                 _______/_____\\______\\_____\n");
+    printf(RED"                 \\                 < < <    |\n");
+    printf(CYAN"               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+    printf(RESET);
+    printf(RED"  _           _        _ _                                    _ \n");
+    printf(RED" | |         | |      | | |                                  | |\n");
+    printf(RED" | |__   __ _| |_ __ _| | |__   __ _   _ __   __ ___   ____ _| |\n");
+    printf(RED" | '_ \\ / _` | __/ _` | | '_ \\ / _` | | '_ \\ / _` \\ \\ / / _` | |\n");
+    printf(RED" | |_) | (_| | || (_| | | | | | (_| | | | | | (_| |\\ V / (_| | |\n");
+    printf(RED" |_.__/ \\__,_|\\__\\__,_|_|_| |_|\\__,_| |_| |_|\\__,_| \\_/ \\__,_|_|\n");
+    printf(RESET);
+}
+
+void tabelaTamanhos(){
+    printf("Monte seu Tabuleiro de navios:\n\n");
+    printf("Tabela de navios:\n");
+    printf("Quantidade || Tamanho\n");
+    printf("   1       ||    4\n");
+    printf("   2       ||    3\n");
+    printf("   3       ||    2\n");
+    printf("   4       ||    1\n");
+}
+
+
 void draw_box_with_text(int width, int height, const char *text) {
     int text_row = height / 2;               
     int text_col = (width - strlen(text)) / 2; 
@@ -48,9 +75,11 @@ void imprimeMatriz(int matriz[7][7], int tipo){
     if(!tipo){
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 7; j++) {
-                printf("%d ", matriz[i][j]);
+                if(matriz[i][j])
+                printf(RED"%d ", matriz[i][j]);
+                else printf(CYAN"%d ", matriz[i][j]);
             }
-            printf("\n");
+            printf(RESET"\n");
         }
     }else{
         for (int i = 0; i < 7; i++) {
@@ -68,9 +97,7 @@ void imprimeMatriz(int matriz[7][7], int tipo){
                 default:
                     printf(RESET"%d ", matriz[i][j]);
                     break;
-                }
-                
-                
+                }      
             }
             printf("\n");
         }
@@ -135,7 +162,71 @@ void insereNavioPlayer(int tabuleiro[7][7], Navio navio){
             tabuleiro[navio.x + i][navio.y] = 1;
        }
     }
+}
 
+void insereTabuleiroPlayer(int tabuleiroPlayer[7][7]){
+
+    Navio navioPlayer[10];
+    int validaPlayer = 0;
+
+    for (int i = 0; i < 10; i++)
+    {
+        if (i == 0)
+        {
+            navioPlayer[i].tamanho = 4;
+        }
+        else if (i == 1 || i == 2)
+        {
+            navioPlayer[i].tamanho = 3;
+        }
+        else if (i >= 3 && i <= 5)
+        {
+            navioPlayer[i].tamanho = 2;
+        }
+        else
+        {
+            navioPlayer[i].tamanho = 1;
+        }
+
+        do
+        {
+
+            limparTela();
+            tabelaTamanhos();
+            printf("\nSeu tabuleiro atual:\n");
+            imprimeMatriz(tabuleiroPlayer, 0);
+
+            printf("\nInsira o navio %d\n", i);
+
+            printf("Digite o valor da posição x: ");
+            scanf("%d", &navioPlayer[i].x);
+
+            printf("Digite o valor da posição y: ");
+            scanf("%d", &navioPlayer[i].y);
+
+            do
+            {
+                printf("Digite a orientacao do navio\n0 para vertical e 1 para horizontal: ");
+                scanf("%d", &navioPlayer[i].direcao);
+                if (navioPlayer[i].direcao < 0 || navioPlayer[i].direcao > 1)
+                {
+                    printf("\nPosicao Invalida. Digite novamente...\n");
+                }
+            } while (navioPlayer[i].direcao < 0 || navioPlayer[i].direcao > 1);
+
+            validaPlayer = verificaPosicaoValida(tabuleiroPlayer, navioPlayer[i]);
+
+            if (!validaPlayer)
+            {
+                printf("\nposicao invalida, digite novamente...\n");
+            }
+            else
+            {
+                insereNavioPlayer(tabuleiroPlayer, navioPlayer[i]);
+            }
+
+        } while (!validaPlayer);
+    }
 }
 
 void fazJogada(int jogada[7][7], int tabuleiro[7][7], int tipo)
@@ -154,7 +245,6 @@ void fazJogada(int jogada[7][7], int tabuleiro[7][7], int tipo)
 
     while (validaJogada)
     {
-
         if(tipo){
             cooJogada[0] = rand() % 7;
             cooJogada[1] = rand() % 7;
@@ -172,7 +262,6 @@ void fazJogada(int jogada[7][7], int tabuleiro[7][7], int tipo)
                 }
             }while (validaJogadaPlayer);
         }
-        
         if (jogada[cooJogada[0]][cooJogada[1]] == 0)
         {
             if (tabuleiro[cooJogada[0]][cooJogada[1]])
