@@ -9,6 +9,7 @@ int main() {
     int tabuleiroBot[7][7], jogadaBot[7][7], tabuleiroPlayer[7][7], jogadaPlayer[7][7];
     Navio navio[10], navioPlayer[10];
     int pronto = 0, prontoPlayer = 0, validaPlayer = 0;
+    int cooPlayer[2];
 
     navio[0].tamanho = 4;
     navio[1].tamanho = 3;
@@ -43,7 +44,7 @@ int main() {
                 break;
             case 2:
 
-                if(!prontoPlayer){
+                if(prontoPlayer){
 
                     printf("Monte seu Tabuleiro de navios:\n\n");
                     printf("Tabela de navios disponiveis:\n");
@@ -102,12 +103,12 @@ int main() {
                             
 
                         }while(!validaPlayer);
-                    }
-                    
-                    
+                    } 
                     prontoPlayer = 1;
-
                 }
+
+                fazJogada(jogadaPlayer, tabuleiroBot, 0);
+                imprimeMatriz(jogadaPlayer, 1);
 
                 if(pronto == 0){
                     for (int i = 0; i < 10; i++){
@@ -119,7 +120,7 @@ int main() {
                 printf("\n\nTabuleiro de navios:\n");
                 imprimeMatriz(tabuleiroBot, 0);
 
-                fazJogada(jogadaBot, tabuleiroPlayer);
+                fazJogada(jogadaBot, tabuleiroPlayer, 1);
                    
                 printf("\n\nTabuleiro de jogadas:\n");
                 imprimeMatriz(jogadaBot, 1);
@@ -142,5 +143,3 @@ int main() {
 
     return 0;
 }
-
-

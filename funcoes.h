@@ -138,12 +138,14 @@ void insereNavioPlayer(int tabuleiro[7][7], Navio navio){
 
 }
 
-void fazJogada(int jogada[7][7], int tabuleiro[7][7])
+void fazJogada(int jogada[7][7], int tabuleiro[7][7], int tipo)
 {
 
-    int cooJogada[2], validaJogada;
-    validaJogada = 1;
+    int cooJogada[2], validaJogada = 1, validaJogadaPlayer = 0;
 
+
+    //tipo 0 humano
+    //tipo 1 bot
     /*
     Valor 0 -> inexplorado
     Valor 1 -> Agua
@@ -153,9 +155,24 @@ void fazJogada(int jogada[7][7], int tabuleiro[7][7])
     while (validaJogada)
     {
 
-        cooJogada[0] = rand() % 7;
-        cooJogada[1] = rand() % 7;
+        if(tipo){
+            cooJogada[0] = rand() % 7;
+            cooJogada[1] = rand() % 7;
+        }else{
 
+            do{
+                printf("Faca sua jogada\n");
+                printf("Valor da linha: ");
+                scanf("%d", &cooJogada[0]);
+                printf("Valor da coluna: ");
+                scanf("%d", &cooJogada[1]);
+                if(cooJogada[0] > 7 || cooJogada[0] < 0 || cooJogada[1] > 7|| cooJogada[1] < 0){
+                    validaJogadaPlayer = 1;
+                    printf("\n Valores invalidos, digite numeros entre 0 e 6\n");
+                }
+            }while (validaJogadaPlayer);
+        }
+        
         if (jogada[cooJogada[0]][cooJogada[1]] == 0)
         {
             if (tabuleiro[cooJogada[0]][cooJogada[1]])
@@ -167,6 +184,9 @@ void fazJogada(int jogada[7][7], int tabuleiro[7][7])
                 jogada[cooJogada[0]][cooJogada[1]] = 1;
             }
             validaJogada = 0;
+        }
+        if(!tipo && validaJogada){
+            printf("Coordenada ja explorada, insira outra\n\n");
         }
     }
 }
