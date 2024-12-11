@@ -42,26 +42,6 @@ void tabelaTamanhos(){
 }
 
 
-void draw_box_with_text(int width, int height, const char *text) {
-    int text_row = height / 2;               
-    int text_col = (width - strlen(text)) / 2; 
-    
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            if (i == 0 || i == height - 1) {
-                printf(CYAN "*"); 
-            } else if (j == 0 || j == width - 1) {
-                printf(CYAN "*"); 
-            } else if (i == text_row && j >= text_col && j < text_col + strlen(text)) {
-                printf(RESET "%c", text[j - text_col]); 
-            } else {
-                printf(" ");
-            }
-        }
-        printf(RESET "\n"); 
-    }
-}
-
 void zeraMatriz(int matriz[7][7]) {
     for (int i = 0; i < 7; i++) {
         for (int j = 0; j < 7; j++) {
@@ -70,10 +50,26 @@ void zeraMatriz(int matriz[7][7]) {
     }
 }
 
+void navioTamanho(Navio navio[10]){
+    navio[0].tamanho = 4;
+    navio[1].tamanho = 3;
+    navio[2].tamanho = 3;
+    navio[3].tamanho = 2;
+    navio[4].tamanho = 2;
+    navio[5].tamanho = 2;
+    navio[6].tamanho = 1;
+    navio[7].tamanho = 1;
+    navio[8].tamanho = 1;
+    navio[9].tamanho = 1;
+}
+
 void imprimeMatriz(int matriz[7][7], int tipo){
+
+    printf("\n  0 1 2 3 4 5 6\n");
 
     if(!tipo){
         for (int i = 0; i < 7; i++) {
+            printf("%d ", i);
             for (int j = 0; j < 7; j++) {
                 if(matriz[i][j])
                 printf(RED"%d ", matriz[i][j]);
@@ -83,6 +79,7 @@ void imprimeMatriz(int matriz[7][7], int tipo){
         }
     }else{
         for (int i = 0; i < 7; i++) {
+            printf("%d ", i);
             for (int j = 0; j < 7; j++) {
                 switch (matriz[i][j])
                 {
@@ -102,8 +99,42 @@ void imprimeMatriz(int matriz[7][7], int tipo){
             printf("\n");
         }
     }
+}
 
-    
+void imprimeDuasMatrizes(int matriz1[7][7], int matriz2[7][7]) {
+    printf("\n Tabuleiro Atual     Suas Jogadas\n");
+    printf("\n  0 1 2 3 4 5 6      0 1 2 3 4 5 6\n");
+
+    for (int i = 0; i < 7; i++) {
+
+        printf("%d ", i);
+        for (int j = 0; j < 7; j++) {
+            if (matriz1[i][j])
+                printf(RED "%d " RESET, matriz1[i][j]);
+            else
+                printf(CYAN "%d " RESET, matriz1[i][j]);
+        }
+
+
+        printf("   ");
+
+        printf("%d ", i);
+        for (int j = 0; j < 7; j++) {
+            switch (matriz2[i][j]) {
+                case 1:
+                    printf(CYAN "%d " RESET, matriz2[i][j]);
+                    break;
+                case 2:
+                    printf(RED "%d " RESET, matriz2[i][j]);
+                    break;
+                default:
+                    printf(RESET "%d " RESET, matriz2[i][j]);
+                    break;
+            }
+        }
+
+        printf("\n"); 
+    }
 }
 
 int verificaPosicaoValida(int tabuleiro[7][7], Navio navio) {
@@ -132,10 +163,13 @@ int verificaPosicaoValida(int tabuleiro[7][7], Navio navio) {
 void geraNavio(int tabuleiro[7][7], Navio *navio) {
 
     navio->valida = 0;
+    srand(time(NULL) + getpid());
 
     while (!navio->valida) {
+ 
         navio->x = rand() % 7; 
-        navio->y = rand() % 7;   
+        navio->y = rand() % 7; 
+  
         navio->direcao = rand() % 2; 
         navio->valida = 0;  
 
@@ -198,15 +232,15 @@ void insereTabuleiroPlayer(int tabuleiroPlayer[7][7]){
 
             printf("\nInsira o navio %d\n", i);
 
-            printf("Digite o valor da posição x: ");
+            printf("Digite o valor da linha: ");
             scanf("%d", &navioPlayer[i].x);
 
-            printf("Digite o valor da posição y: ");
+            printf("Digite o valor da coluna: ");
             scanf("%d", &navioPlayer[i].y);
 
             do
             {
-                printf("Digite a orientacao do navio\n0 para vertical e 1 para horizontal: ");
+                printf("Digite a orientacao do navio\n1 para vertical e 0 para horizontal: ");
                 scanf("%d", &navioPlayer[i].direcao);
                 if (navioPlayer[i].direcao < 0 || navioPlayer[i].direcao > 1)
                 {
@@ -229,53 +263,21 @@ void insereTabuleiroPlayer(int tabuleiroPlayer[7][7]){
     }
 }
 
-void fazJogada(int jogada[7][7], int tabuleiro[7][7], int tipo)
+void fazJogada(int cooJogada[2])
 {
 
-    int cooJogada[2], validaJogada = 1, validaJogadaPlayer = 0;
+    int validaJogadaPlayer = 0;
 
-
-    //tipo 0 humano
-    //tipo 1 bot
-    /*
-    Valor 0 -> inexplorado
-    Valor 1 -> Agua
-    Valor 2 -> Barco
-    */
-
-    while (validaJogada)
-    {
-        if(tipo){
-            cooJogada[0] = rand() % 7;
-            cooJogada[1] = rand() % 7;
-        }else{
-
-            do{
-                printf("Faca sua jogada\n");
-                printf("Valor da linha: ");
-                scanf("%d", &cooJogada[0]);
-                printf("Valor da coluna: ");
-                scanf("%d", &cooJogada[1]);
-                if(cooJogada[0] > 7 || cooJogada[0] < 0 || cooJogada[1] > 7|| cooJogada[1] < 0){
-                    validaJogadaPlayer = 1;
-                    printf("\n Valores invalidos, digite numeros entre 0 e 6\n");
-                }
+        do{
+            printf("Faca sua jogada\n");
+            printf("Valor da linha: ");
+            scanf("%d", &cooJogada[0]);
+            printf("Valor da coluna: ");
+            scanf("%d", &cooJogada[1]);
+            if(cooJogada[0] > 7 || cooJogada[0] < 0 || cooJogada[1] > 7|| cooJogada[1] < 0){
+                validaJogadaPlayer = 1;
+                printf("\n Valores invalidos, digite numeros entre 0 e 6\n");
+            }
             }while (validaJogadaPlayer);
-        }
-        if (jogada[cooJogada[0]][cooJogada[1]] == 0)
-        {
-            if (tabuleiro[cooJogada[0]][cooJogada[1]])
-            {
-                jogada[cooJogada[0]][cooJogada[1]] = 2;
-            }
-            else
-            {
-                jogada[cooJogada[0]][cooJogada[1]] = 1;
-            }
-            validaJogada = 0;
-        }
-        if(!tipo && validaJogada){
-            printf("Coordenada ja explorada, insira outra\n\n");
-        }
-    }
+        
 }
