@@ -205,25 +205,12 @@ void insereTabuleiroPlayer(int tabuleiroPlayer[7][7]){
 
     for (int i = 0; i < 10; i++)
     {
-        if (i == 0)
-        {
-            navioPlayer[i].tamanho = 4;
-        }
-        else if (i == 1 || i == 2)
-        {
-            navioPlayer[i].tamanho = 3;
-        }
-        else if (i >= 3 && i <= 5)
-        {
-            navioPlayer[i].tamanho = 2;
-        }
-        else
-        {
-            navioPlayer[i].tamanho = 1;
-        }
-
-        do
-        {
+        if (i == 0)  navioPlayer[i].tamanho = 4;
+        else if (i == 1 || i == 2) navioPlayer[i].tamanho = 3;
+        else if (i >= 3 && i <= 5) navioPlayer[i].tamanho = 2;
+        else navioPlayer[i].tamanho = 1;
+        
+        do{
 
             limparTela();
             tabelaTamanhos();
@@ -277,6 +264,8 @@ void fazJogada(int cooJogada[2])
             if(cooJogada[0] > 7 || cooJogada[0] < 0 || cooJogada[1] > 7|| cooJogada[1] < 0){
                 validaJogadaPlayer = 1;
                 printf("\n Valores invalidos, digite numeros entre 0 e 6\n");
+            }else{
+                validaJogadaPlayer = 0;
             }
             }while (validaJogadaPlayer);
         
